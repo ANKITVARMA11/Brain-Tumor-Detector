@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Tumor Detection</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+<body>
+    <h2>Brain Tumor Detection</h2>
+    <p>Upload an image to detect if a brain tumor is present.</p>
+
+    <!-- Form for uploading the image -->
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="imageUpload" name="image" accept="image/*" required><br><br>
+        <button type="submit">Upload Image</button>
+    </form>
+
+    <h3>Prediction Result:</h3>
+    <p id="result">Waiting for image...</p>
+
+    <script>
+        // Submit the form and fetch the result
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            const fileInput = document.getElementById('imageUpload');
+            formData.append("image", fileInput.files[0]);
+
+            // Send the form data to the server
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = `Prediction: ${data.prediction}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = 'Error occurred during prediction';
+            });
+        });
+    </script>
+</body>
+</html>
